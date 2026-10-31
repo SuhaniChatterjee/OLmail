@@ -13,7 +13,7 @@ import { ensureIndex, reindexAll, searchEnabled } from './services/searchIndex.j
 
 const app = express();
 app.use(BULL_BOARD_PATH, ...createBullBoardRouter());
-app.use(cors({ origin: config.frontendUrl }));
+app.use(cors({ origin: config.frontendUrls }));
 app.use(express.json({ limit: '2mb' }));
 
 app.get('/api/health', (_req, res) => {

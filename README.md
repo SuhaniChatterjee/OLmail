@@ -156,6 +156,42 @@ The connection is stored per user in Postgres (`slack_connections`) and looked u
 
 ---
 
+## Deploying
+
+The backend (API, worker, Postgres, Redis) runs on [Railway](https://railway.com) and the frontend on [Vercel](https://vercel.com). Elasticsearch is optional; without it search uses Postgres.
+
+### Railway (backend)
+
+1. **New Project → Deploy from GitHub repo**, pick this repo. Then **+ New → Database** and add **PostgreSQL** and **Redis**.
+2. **API service** (the one created from the repo): Settings → Root Directory `backend`. It picks up `backend/railway.json` (build, `npm start`, health check on `/api/health`). Under Networking, **Generate Domain**.
+3. **Worker service**: **+ New → GitHub Repo**, same repo. Root Directory `backend`, and set **Config-as-code file path** to `/backend/railway.worker.json`. It needs no domain.
+4. Variables, on **both** services:
+
+   | Variable | Value |
+   |---|---|
+   | `DATABASE_URL` | `${{Postgres.DATABASE_URL}}` |
+   | `REDIS_URL` | `${{Redis.REDIS_URL}}` |
+   | `JWT_SECRET` | a long random string (`openssl rand -hex 32`) |
+   | `FRONTEND_URL` | the Vercel URL, e.g. `https://olmail.vercel.app` (comma-separate to allow more than one) |
+   | `PUBLIC_API_URL` | the API's Railway domain, e.g. `https://olmail-api.up.railway.app` |
+   | `GOOGLE_CLIENT_ID` | optional, same as the frontend's |
+   | `SLACK_CLIENT_ID` / `SLACK_CLIENT_SECRET` | optional |
+   | `BULL_BOARD_USER` / `BULL_BOARD_PASS` | recommended, protects `/admin/queues` |
+
+   Tables are created automatically on startup.
+
+### Vercel (frontend)
+
+1. **Add New → Project**, import this repo, set Root Directory to `frontend` (framework: Vite). `frontend/vercel.json` makes client-side routes like `/mailbox` work on refresh.
+2. Environment variables: `VITE_API_URL` = the Railway API URL, and optionally `VITE_GOOGLE_CLIENT_ID`.
+3. Deploy, then put the Vercel URL into `FRONTEND_URL` on Railway (both services) and redeploy them.
+
+### After deploying
+
+- **Google login**: add the Vercel URL to the OAuth client's *Authorized JavaScript origins* in Google Cloud Console.
+- **Slack**: add `https://<railway-api-domain>/api/integrations/slack/callback` to the Slack app's Redirect URLs. No ngrok tunnel needed.
+- Emails go through Ethereal, so nothing reaches real inboxes.
+
 ## API
 
 All routes except login and the Slack callback require `Authorization: Bearer <token>`.

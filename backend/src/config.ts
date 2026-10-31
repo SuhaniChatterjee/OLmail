@@ -8,12 +8,18 @@ function num(name: string, fallback: number): number {
 }
 
 const port = num('PORT', 4000);
+// Comma-separated list allowed (e.g. production + preview URLs); the first one is used for redirects.
+const frontendUrls = (process.env.FRONTEND_URL ?? 'http://localhost:5173')
+  .split(',')
+  .map((u) => u.trim().replace(/\/$/, ''))
+  .filter(Boolean);
 const publicApiUrl = (process.env.PUBLIC_API_URL ?? `http://localhost:${port}`).replace(/\/$/, '');
 
 export const config = {
   port,
   publicApiUrl,
-  frontendUrl: process.env.FRONTEND_URL ?? 'http://localhost:5173',
+  frontendUrl: frontendUrls[0],
+  frontendUrls,
   databaseUrl: process.env.DATABASE_URL ?? 'postgres://scheduler:scheduler@localhost:54329/scheduler',
   redisUrl: process.env.REDIS_URL ?? 'redis://localhost:6379',
   jwtSecret: process.env.JWT_SECRET ?? 'change-me',
