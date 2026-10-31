@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-pixel: "Silkscreen", monospace;
+  --color-brand: #0aa445;
+  --color-brand-dark: #08893a;
+  --color-brand-soft: #e6f6ec;
+  --color-field: #f4f5f4;
+  --color-line: #ececec;
+  --color-ink: #1c1c1c;
+  --color-muted: #8a8a8a;
+}
+
+body {
+  @apply bg-white text-ink font-sans antialiased;
+}
+
+/* Rich text editor content */
+.rich-content :where(ul) { @apply list-disc pl-6; }
+.rich-content :where(ol) { @apply list-decimal pl-6; }
+.rich-content :where(blockquote) { @apply border-l-4 border-amber-400 bg-amber-50 px-4 py-2; }
+.rich-content :where(p, div) { @apply min-h-[1.25em]; }
+.rich-content :where(a) { @apply text-brand underline; }
+[contenteditable][data-placeholder]:empty::before {
+  content: attr(data-placeholder);
+  @apply text-muted pointer-events-none;
+}

@@ -1,0 +1,28 @@
+name: suhani-proj
+services:
+  redis:
+    image: redis:7-alpine
+    # AOF persistence so delayed BullMQ jobs survive a Redis restart too
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory-policy", "noeviction"]
+    ports: ["6379:6379"]
+    volumes: [redis-data:/data]
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: scheduler
+      POSTGRES_PASSWORD: scheduler
+      POSTGRES_DB: scheduler
+    ports: ["54329:5432"]
+    volumes: [pg-data:/var/lib/postgresql/data]
+  elasticsearch:
+    image: elasticsearch:9.5.5
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports: ["9200:9200"]
+    volumes: [es-data:/usr/share/elasticsearch/data]
+volumes:
+  es-data:
+  redis-data:
+  pg-data:
