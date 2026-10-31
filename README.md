@@ -160,6 +160,15 @@ The connection is stored per user in Postgres (`slack_connections`) and looked u
 
 The backend (API, worker, Postgres, Redis) runs on [Railway](https://railway.com) and the frontend on [Vercel](https://vercel.com). Elasticsearch is optional; without it search uses Postgres.
 
+### Free option: Render
+
+`render.yaml` deploys everything on Render's free plan: the API and worker in one process (`npm run start:all`), the frontend as a static site, Postgres and Key Value (Redis).
+
+1. On [render.com](https://render.com), **New → Blueprint**, pick this repo, and apply. Leave `GOOGLE_CLIENT_ID` / `VITE_GOOGLE_CLIENT_ID` empty to use email/password login only.
+2. The app is at `https://olmail-suhani.onrender.com`, the API at `https://olmail-suhani-api.onrender.com`. If Render assigns different URLs, update `FRONTEND_URL` and `VITE_API_URL` to match.
+
+Free-plan limits: the API sleeps after 15 minutes idle (the first request takes about a minute), the free Postgres expires after 30 days, and Key Value isn't persisted (scheduled jobs are re-queued from Postgres on startup).
+
 ### Railway (backend)
 
 1. **New Project → Deploy from GitHub repo**, pick this repo. Then **+ New → Database** and add **PostgreSQL** and **Redis**.

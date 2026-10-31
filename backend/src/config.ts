@@ -13,7 +13,8 @@ const frontendUrls = (process.env.FRONTEND_URL ?? 'http://localhost:5173')
   .split(',')
   .map((u) => u.trim().replace(/\/$/, ''))
   .filter(Boolean);
-const publicApiUrl = (process.env.PUBLIC_API_URL ?? `http://localhost:${port}`).replace(/\/$/, '');
+// RENDER_EXTERNAL_URL is set automatically on Render.
+const publicApiUrl = (process.env.PUBLIC_API_URL ?? process.env.RENDER_EXTERNAL_URL ?? `http://localhost:${port}`).replace(/\/$/, '');
 
 export const config = {
   port,
