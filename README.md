@@ -167,6 +167,8 @@ The backend (API, worker, Postgres, Redis) runs on [Railway](https://railway.com
 1. On [render.com](https://render.com), **New → Blueprint**, pick this repo, and apply. Leave `GOOGLE_CLIENT_ID` / `VITE_GOOGLE_CLIENT_ID` empty to use email/password login only.
 2. The app is at `https://olmail-suhani.onrender.com`, the API at `https://olmail-suhani-api.onrender.com`. If Render assigns different URLs, update `FRONTEND_URL` and `VITE_API_URL` to match.
 
+3. Render's free plan blocks outgoing SMTP ports, so Ethereal can't be reached. Create a free [Mailtrap](https://mailtrap.io) account, open **Email Testing → Inboxes → My Inbox**, and set `MAILTRAP_API_TOKEN` (an API token from **Settings → API Tokens**) and `MAILTRAP_INBOX_ID` (the number in the inbox URL) on the API service. Emails then land in the Mailtrap inbox.
+
 Free-plan limits: the API sleeps after 15 minutes idle (the first request takes about a minute), the free Postgres expires after 30 days, and Key Value isn't persisted (scheduled jobs are re-queued from Postgres on startup).
 
 ### Railway (backend)

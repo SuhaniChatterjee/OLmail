@@ -27,6 +27,11 @@ services:
         value: https://olmail-suhani.onrender.com
       - key: GOOGLE_CLIENT_ID
         sync: false
+      # Free web services can't reach SMTP ports, so mail goes through Mailtrap's HTTPS API
+      - key: MAILTRAP_API_TOKEN
+        sync: false
+      - key: MAILTRAP_INBOX_ID
+        sync: false
       - key: BULL_BOARD_USER
         value: admin
       - key: BULL_BOARD_PASS

@@ -29,6 +29,12 @@ export const config = {
     user: process.env.ETHEREAL_USER ?? '',
     pass: process.env.ETHEREAL_PASS ?? '',
   },
+  // Mailtrap Email Testing (sandbox) over HTTPS, for hosts that block SMTP ports (e.g. Render's free plan).
+  // When the token is set the worker sends through Mailtrap instead of Ethereal SMTP.
+  mailtrap: {
+    apiToken: process.env.MAILTRAP_API_TOKEN ?? '',
+    inboxId: process.env.MAILTRAP_INBOX_ID ?? '',
+  },
   elasticsearch: {
     // Empty disables indexing; search then falls back to Postgres ILIKE.
     url: process.env.ELASTICSEARCH_URL ?? '',
